@@ -1,0 +1,19 @@
+<div class="amount-group">
+  <span class="currency">$</span>
+  {{input class="amount" name="amount" type="number" placeholder="Custom amount" value=amount}}
+  <span class="period">per month</span>
+</div>
+<div class="input-group">
+  {{textarea
+    name="description"
+    placeholder="Tell your donors what this goal will allow you to do. Be specific, but make it interesting!"
+    value=description}}
+</div>
+<div class="input-group">
+  {{#if isNew}}
+    <button class="default save" {{action 'save'}}>Create Goal</button>
+  {{else}}
+    <button class="default cancel" {{action 'cancel'}}>Cancel</button>
+    <button class="default save" {{action 'save'}}>Save changes</button>
+  {{/if}}
+</div>
