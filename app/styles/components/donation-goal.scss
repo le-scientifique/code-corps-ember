@@ -1,0 +1,18 @@
+.donation-goal {
+  border-left: 3px solid $border-default;
+  margin: 1.5em 10px;
+  padding: 0.5em 10px;
+
+  .amount, .edit {
+    display: inline-block;
+  }
+
+  .amount {
+    font-weight: 300;
+    margin: 5px 10px 5px 0;
+  }
+
+  .description {
+    margin: 5px 0;
+  }
+}
