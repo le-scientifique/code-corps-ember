@@ -1,0 +1,14 @@
+{{#each donationGoals as |donationGoal|}}
+  {{#if donationGoal.isEditing}}
+    {{donation-goal-edit
+      amount=donationGoal.amount
+      description=donationGoal.description
+      isNew=donationGoal.isNew
+      save=(action 'save' donationGoal)
+      cancel=(action 'cancel' donationGoal)}}
+  {{else}}
+    {{donation-goal
+      donationGoal=donationGoal
+      edit=(action 'edit' donationGoal)}}
+  {{/if}}
+{{/each}}
