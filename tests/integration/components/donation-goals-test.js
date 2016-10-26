@@ -103,3 +103,23 @@ test('it sends "save" action with donation goal as parameter when save button is
   assert.equal(this.$('.donation-goal').length, 1, 'Subcomponent is in edit mode');
 });
 
+test('it sends "cancel" action with donation goal as parameter when cancel button is clicked', function(assert) {
+  assert.expect(3);
+
+  let mockGoals = [
+    Object.create({ isEditing: true, isNew: false })
+  ];
+
+  this.set('donationGoals', mockGoals);
+
+  this.set('cancelHandler', (donationGoal) => {
+    assert.deepEqual(mockGoals[0], donationGoal, 'Handler got called, with donation goal');
+  });
+
+  this.render(hbs`{{donation-goals donationGoals=donationGoals cancel=(action cancelHandler)}}`);
+
+  assert.equal(this.$('.donation-goal-edit').length, 1, 'Subcomponent is in view mode');
+  this.$('.cancel').click();
+  assert.equal(this.$('.donation-goal').length, 1, 'Subcomponent is in edit mode');
+});
+

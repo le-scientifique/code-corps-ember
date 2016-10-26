@@ -10,6 +10,7 @@ export default Component.extend({
   actions: {
     cancel(donationGoal) {
       donationGoal.set('isEditing', false);
+      this.sendAction('cancel', donationGoal);
     },
 
     edit(donationGoal) {

@@ -10,10 +10,8 @@
     value=description}}
 </div>
 <div class="input-group">
-  {{#if isNew}}
-    <button class="default save" {{action 'save'}}>Create Goal</button>
-  {{else}}
-    <button class="default cancel" {{action 'cancel'}}>Cancel</button>
-    <button class="default save" {{action 'save'}}>Save changes</button>
-  {{/if}}
+  <button class="default save" {{action 'save'}}>
+    {{#if isNew}}Create Goal{{else}}Save changes{{/if}}
+  </button>
+  <button class="default cancel" {{action 'cancel'}}>Cancel</button>
 </div>
