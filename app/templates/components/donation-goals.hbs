@@ -1,7 +1,8 @@
-{{#each donationGoals as |donationGoal|}}
+{{#each project.donationGoals as |donationGoal|}}
   {{#if donationGoal.isEditing}}
     {{donation-goal-edit
       amount=donationGoal.amount
+      canCancel=hasExistingDonationGoals
       description=donationGoal.description
       isNew=donationGoal.isNew
       save=(action 'save' donationGoal)
@@ -12,3 +13,6 @@
       edit=(action 'edit' donationGoal)}}
   {{/if}}
 {{/each}}
+{{#if hasExistingDonationGoals}}
+  <button class="add" {{action 'add' project}}>Add Another Goal</button>
+{{/if}}

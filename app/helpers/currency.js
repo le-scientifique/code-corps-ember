@@ -15,6 +15,8 @@ export function currency([centsString]) {
   let sign = '$';
 
   if (cents > 0) {
+    return `${sign}${dollars}.0${cents}`;
+  } else if (cents > 10) {
     return `${sign}${dollars}.${cents}`;
   } else {
     return `${sign}${dollars}`;

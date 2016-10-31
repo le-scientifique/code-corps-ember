@@ -57,7 +57,6 @@ AppRouter.map(function() {
       this.route('task', { path: '/:number' });
     });
     this.route('donate');
-    this.route('donation-goals');
   });
 
   this.route('projects', {
