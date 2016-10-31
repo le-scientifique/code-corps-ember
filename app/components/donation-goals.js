@@ -9,6 +9,7 @@ export default Component.extend({
   classNames: ['donation-goals'],
 
   canAdd: computed.not('currentlyEditingDonationGoals'),
+  canActivateDonations: computed.alias('hasExistingDonationGoals'),
   canCancel: computed.alias('hasExistingDonationGoals'),
   canEdit: computed.not('currentlyEditingDonationGoals'),
   currentlyEditingDonationGoals: computed.notEmpty('isEditingDonationGoals'),
