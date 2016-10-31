@@ -27,9 +27,9 @@ test('it renders the correct number of subcomponents', function(assert) {
     Object.create({})
   ];
 
-  this.set('donationGoals', mockGoals);
+  this.set('project', Object.create({ donationGoals: mockGoals }));
 
-  this.render(hbs`{{donation-goals donationGoals=donationGoals}}`);
+  this.render(hbs`{{donation-goals project=project}}`);
 
   assert.equal(this.$('.donation-goal').length, 3, 'Renders correct number of donation-goal components');
 });
@@ -43,9 +43,9 @@ test('it renders the correct number of subcomponents in view or edit mode', func
     Object.create({ isEditing: false })
   ];
 
-  this.set('donationGoals', mockGoals);
+  this.set('project', Object.create({ donationGoals: mockGoals }));
 
-  this.render(hbs`{{donation-goals donationGoals=donationGoals}}`);
+  this.render(hbs`{{donation-goals project=project}}`);
 
   assert.equal(this.$('.donation-goal').length, 2, 'Renders correct number of donation-goal components');
   assert.equal(this.$('.donation-goal-edit').length, 1, 'Renders correct number of donation-goal-edit components');
@@ -58,9 +58,9 @@ test('it sets subcomponent to edit when clicking an edit link', function(assert)
     Object.create({ isEditing: false })
   ];
 
-  this.set('donationGoals', mockGoals);
+  this.set('project', Object.create({ donationGoals: mockGoals }));
 
-  this.render(hbs`{{donation-goals donationGoals=donationGoals}}`);
+  this.render(hbs`{{donation-goals project=project}}`);
 
   assert.equal(this.$('.donation-goal').length, 1, 'Subcomponent is in view mode');
   this.$('.edit').click();
@@ -74,13 +74,13 @@ test('it sets subcomponent to view mode when cancel button is clicked', function
     Object.create({ isEditing: true, isNew: false })
   ];
 
-  this.set('donationGoals', mockGoals);
+  this.set('project', Object.create({ donationGoals: mockGoals }));
 
-  this.render(hbs`{{donation-goals donationGoals=donationGoals}}`);
+  this.render(hbs`{{donation-goals project=project}}`);
 
-  assert.equal(this.$('.donation-goal-edit').length, 1, 'Subcomponent is in view mode');
+  assert.equal(this.$('.donation-goal-edit').length, 1, 'Subcomponent is in edit mode');
   this.$('.cancel').click();
-  assert.equal(this.$('.donation-goal').length, 1, 'Subcomponent is in edit mode');
+  assert.equal(this.$('.donation-goal').length, 1, 'Subcomponent is in view mode');
 });
 
 test('it sends "save" action with donation goal as parameter when save button is clicked', function(assert) {
@@ -90,13 +90,13 @@ test('it sends "save" action with donation goal as parameter when save button is
     Object.create({ isEditing: true, isNew: false })
   ];
 
-  this.set('donationGoals', mockGoals);
+  this.set('project', Object.create({ donationGoals: mockGoals }));
 
   this.set('saveHandler', (donationGoal) => {
     assert.deepEqual(mockGoals[0], donationGoal, 'Handler got called, with donation goal');
   });
 
-  this.render(hbs`{{donation-goals donationGoals=donationGoals save=(action saveHandler)}}`);
+  this.render(hbs`{{donation-goals project=project save=(action saveHandler)}}`);
 
   assert.equal(this.$('.donation-goal-edit').length, 1, 'Subcomponent is in view mode');
   this.$('.save').click();
@@ -110,16 +110,137 @@ test('it sends "cancel" action with donation goal as parameter when cancel butto
     Object.create({ isEditing: true, isNew: false })
   ];
 
-  this.set('donationGoals', mockGoals);
+  this.set('project', Object.create({ donationGoals: mockGoals }));
 
   this.set('cancelHandler', (donationGoal) => {
     assert.deepEqual(mockGoals[0], donationGoal, 'Handler got called, with donation goal');
   });
 
-  this.render(hbs`{{donation-goals donationGoals=donationGoals cancel=(action cancelHandler)}}`);
+  this.render(hbs`{{donation-goals project=project cancel=(action cancelHandler)}}`);
 
   assert.equal(this.$('.donation-goal-edit').length, 1, 'Subcomponent is in view mode');
   this.$('.cancel').click();
   assert.equal(this.$('.donation-goal').length, 1, 'Subcomponent is in edit mode');
 });
 
+test('it does not allow cancelling an edited record if that record is the only one, and new', function(assert) {
+  assert.expect(1);
+
+  let mockGoals = [
+    Object.create({ isEditing: true, isNew: true })
+  ];
+
+  this.set('project', Object.create({ donationGoals: mockGoals }));
+
+  this.render(hbs`{{donation-goals project=project}}`);
+
+  assert.equal(this.$('.cancel').length, 0, 'No cancel button is rendered');
+});
+
+test('it allows cancelling an edited record if that record is the only one and not new', function(assert) {
+  assert.expect(1);
+
+  let mockGoals = [
+    Object.create({ isEditing: true, isNew: false })
+  ];
+
+  this.set('project', Object.create({ donationGoals: mockGoals }));
+
+  this.render(hbs`{{donation-goals project=project}}`);
+
+  assert.equal(this.$('.cancel').length, 1, 'Cancel button is rendered');
+});
+
+test('it allows cancelling an edited record if that record new, but there are other persisted goals', function(assert) {
+  assert.expect(1);
+
+  let mockGoals = [
+    Object.create({ isEditing: true, isNew: true }),
+    Object.create({ isEditing: false, isNew: false })
+  ];
+
+  this.set('project', Object.create({ donationGoals: mockGoals }));
+
+  this.render(hbs`{{donation-goals project=project}}`);
+
+  assert.equal(this.$('.cancel').length, 1, 'Cancel button is rendered');
+});
+
+test('it only allows editing a single record at a time', function(assert) {
+  assert.expect(1);
+
+  let mockGoals = [
+    Object.create({ isEditing: true, isNew: false }),
+    Object.create({ isEditing: false, isNew: false })
+  ];
+
+  this.set('project', Object.create({ donationGoals: mockGoals }));
+
+  this.render(hbs`{{donation-goals project=project}}`);
+
+  assert.equal(this.$('.edit').length, 0, 'A record is being edited, so no other record can be edited');
+});
+
+test('it does not allow adding a record if a record is being edited', function(assert) {
+  assert.expect(1);
+
+  let mockGoals = [
+    Object.create({ isEditing: true, isNew: false })
+  ];
+
+  this.set('project', Object.create({ donationGoals: mockGoals }));
+  this.render(hbs`{{donation-goals project=project}}`);
+  assert.equal(this.$('.add').length, 0, 'A record is being edited, so no other record can be added');
+});
+
+test('it does not allow adding a record if a record is being added', function(assert) {
+  assert.expect(1);
+
+  let mockGoals = [
+    Object.create({ isEditing: true, isNew: true })
+  ];
+
+  this.set('project', Object.create({ donationGoals: mockGoals }));
+  this.render(hbs`{{donation-goals project=project}}`);
+  assert.equal(this.$('.add').length, 0, 'A record is being added, so no other record can be added');
+});
+
+test('it does not allow adding a record if a record is being added', function(assert) {
+  assert.expect(1);
+
+  let mockGoals = [
+    Object.create({ isEditing: false, isNew: false })
+  ];
+
+  this.set('project', Object.create({ donationGoals: mockGoals }));
+  this.render(hbs`{{donation-goals project=project}}`);
+  assert.equal(this.$('.add').length, 1, 'No record is being added or edited, so a new record can be added');
+});
+
+test('it allows activating donations if there are persisted records', function(assert) {
+  assert.expect(1);
+
+  let mockGoals = [
+    Object.create({ isEditing: false, isNew: false })
+  ];
+
+  this.set('project', Object.create({ donationGoals: mockGoals }));
+
+  this.render(hbs`{{donation-goals project=project}}`);
+
+  assert.equal(this.$('.activate-donations').length, 1, 'The "activate donations" button is rendered');
+});
+
+test('it prevents activating donations if there are no persisted records', function(assert) {
+  assert.expect(1);
+
+  let mockGoals = [
+    Object.create({ isEditing: false, isNew: true })
+  ];
+
+  this.set('project', Object.create({ donationGoals: mockGoals }));
+
+  this.render(hbs`{{donation-goals project=project}}`);
+
+  assert.equal(this.$('.activate-donations').length, 0, 'The "activate donations" button is not rendered');
+});

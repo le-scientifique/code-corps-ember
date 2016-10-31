@@ -8,14 +8,16 @@ const {
 export default Component.extend({
   classNames: ['donation-goals'],
 
-  canAdd: computed.not('currentlyEditingDonationGoals'),
-  canActivateDonations: computed.alias('hasExistingDonationGoals'),
-  canCancel: computed.alias('hasExistingDonationGoals'),
-  canEdit: computed.not('currentlyEditingDonationGoals'),
-  currentlyEditingDonationGoals: computed.notEmpty('isEditingDonationGoals'),
-  existingDonationGoals: computed.setDiff('project.donationGoals', 'newDonationGoals'),
-  hasExistingDonationGoals: computed.notEmpty('existingDonationGoals'),
-  isEditingDonationGoals: computed.filterBy('project.donationGoals', 'isEditing'),
+  canAdd: computed.not('_currentlyEditingDonationGoals'),
+  canActivateDonations: computed.alias('_hasExistingDonationGoals'),
+  canCancel: computed.alias('_hasExistingDonationGoals'),
+  canEdit: computed.not('_currentlyEditingDonationGoals'),
+
+  _currentlyEditingDonationGoals: computed.notEmpty('_editedDonationGoals'),
+  _editedDonationGoals: computed.filterBy('project.donationGoals', 'isEditing'),
+  _existingDonationGoals: computed.setDiff('project.donationGoals', '_newDonationGoals'),
+  _hasExistingDonationGoals: computed.notEmpty('_existingDonationGoals'),
+  _newDonationGoals: computed.filterBy('project.donationGoals', 'isNew'),
 
   actions: {
     add(project) {

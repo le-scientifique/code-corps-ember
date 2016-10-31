@@ -11,6 +11,7 @@ const {
  *
  * ```handlebars
  * {{donation-goal
+ *   canEdit=externalEditableFlag
  *   donationGoal=donationGoal
  *   edit=(action externalEditHandler donationGoal)}}
  *
@@ -23,6 +24,14 @@ const {
  */
 export default Component.extend({
   classNames: ['donation-goal'],
+
+  /**
+   * Flag indicating if component should render the edit link. Should be set from outside
+   *
+   * @property canEdit
+   * @type {Boolean}
+   */
+  canEdit: false,
 
   actions: {
     /**

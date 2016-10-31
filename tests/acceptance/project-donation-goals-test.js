@@ -1,9 +1,37 @@
 import { test } from 'qunit';
 import moduleForAcceptance from 'code-corps-ember/tests/helpers/module-for-acceptance';
+import { authenticateAsMemberOfRole } from 'code-corps-ember/tests/helpers/authentication';
 import createProjectWithSluggedRoute from 'code-corps-ember/tests/helpers/mirage/create-project-with-slugged-route';
-import projectDonationGoalsPage from '../pages/project/donation-goals';
+import projectDonationGoalsPage from '../pages/project/settings/donations';
 
 moduleForAcceptance('Acceptance | Project Donation Goals');
+test('it requires authentication', function(assert) {
+  assert.expect(1);
+
+  let project = createProjectWithSluggedRoute();
+  let { organization } = project;
+
+  projectDonationGoalsPage.visit({ organization: organization.slug, project: project.slug });
+
+  andThen(() => {
+    assert.equal(currentRouteName(), 'login', 'User was redirected to project route');
+  });
+});
+
+test('it redirects to project list page if user is not allowed to manage donation goals', function(assert) {
+  assert.expect(1);
+
+  let project = createProjectWithSluggedRoute();
+  let { organization } = project;
+
+  authenticateAsMemberOfRole(this.application, server, organization, 'admin');
+
+  projectDonationGoalsPage.visit({ organization: organization.slug, project: project.slug });
+
+  andThen(() => {
+    assert.equal(currentRouteName(), 'project.index', 'User was redirected to project list route');
+  });
+});
 
 test('it renders existing donation goals', function(assert) {
   assert.expect(1);
@@ -12,6 +40,8 @@ test('it renders existing donation goals', function(assert) {
   let { organization } = project;
   server.createList('donation-goal', 3, { project });
   server.createList('donation-goal', 2);
+
+  authenticateAsMemberOfRole(this.application, server, organization, 'owner');
 
   projectDonationGoalsPage.visit({ organization: organization.slug, project: project.slug });
 
@@ -25,6 +55,8 @@ test('it sets up a new unsaved donation goal if there are no donation goals, whi
 
   let project = createProjectWithSluggedRoute();
   let { organization } = project;
+
+  authenticateAsMemberOfRole(this.application, server, organization, 'owner');
 
   projectDonationGoalsPage.visit({ organization: organization.slug, project: project.slug });
 
@@ -51,6 +83,8 @@ test('it is possible to add a donation goal when donation goals already exists',
   let { organization } = project;
   server.createList('donation-goal', 1, { project });
 
+  authenticateAsMemberOfRole(this.application, server, organization, 'owner');
+
   projectDonationGoalsPage.visit({ organization: organization.slug, project: project.slug });
 
   andThen(() => {
@@ -75,6 +109,8 @@ test('it allows editing of existing donation goals', function(assert) {
   let project = createProjectWithSluggedRoute();
   let { organization } = project;
   server.createList('donation-goal', 1, { project });
+
+  authenticateAsMemberOfRole(this.application, server, organization, 'owner');
 
   projectDonationGoalsPage.visit({ organization: organization.slug, project: project.slug });
 
@@ -101,6 +137,8 @@ test('cancelling edit of an unsaved new goal removes that goal from the list', f
   let { organization } = project;
   server.createList('donation-goal', 1, { project });
 
+  authenticateAsMemberOfRole(this.application, server, organization, 'owner');
+
   projectDonationGoalsPage.visit({ organization: organization.slug, project: project.slug });
 
   andThen(() => {
@@ -121,6 +159,8 @@ test('cancelling edit of an unsaved existing goal keeps that goal in the list', 
   let project = createProjectWithSluggedRoute();
   let { organization } = project;
   server.createList('donation-goal', 1, { project });
+
+  authenticateAsMemberOfRole(this.application, server, organization, 'owner');
 
   projectDonationGoalsPage.visit({ organization: organization.slug, project: project.slug });
 

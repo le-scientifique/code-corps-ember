@@ -12,9 +12,10 @@ const {
  * ```handlebars
  * {{donation-goal-edit
  *   amount=donationGoal.amount
+ *   cancellable=externalCancellableFlag
  *   description=donationGoal.description
- *   isNew=donationGoal.isNew
  *   cancel=(action externalCancelHandler)
+ *   isNew=donationGoal.isNew
  *   save=(action externalSaveHandler donationGoal)}}
  *
  * Used as above, the `externalSaveHandler` will receive a call with the actual
@@ -32,10 +33,23 @@ export default Component.extend({
   classNames: ['donation-goal-edit'],
 
   /**
+   * Indicates if "cancel" button should render.
+   *
+   * Cancel button should only render if one of two cases
+   * - the record is already persisted and we are simply editing it
+   * - the record is new, but there are other persisted records, so cancelling this one
+   *   does not mean there will be no persisted records at all
+   *
+   * @property canCancel
+   * @type {Boolean}
+   */
+  canCancel: false,
+
+  /**
    * Indicates if the donation goal being edited is a new or existing record
    * Depending on that, the user interface will differ.
    * New records will have a "create" button
-   * Existing records will have "cancel" and "save" button
+   * Existing records will have a "save" button
    *
    * @property isNew
    * @type {Boolean}
