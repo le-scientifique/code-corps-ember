@@ -14,15 +14,17 @@
     {{donation-goal-edit
       amount=donationGoal.amount
       canCancel=canCancel
+      cancel=(action 'cancel' donationGoal)
       description=donationGoal.description
       isNew=donationGoal.isNew
       save=(action 'save' donationGoal)
-      cancel=(action 'cancel' donationGoal)}}
+    }}
   {{else}}
     {{donation-goal
       canEdit=canEdit
       donationGoal=donationGoal
-      edit=(action 'edit' donationGoal)}}
+      edit=(action 'edit' donationGoal)
+    }}
   {{/if}}
 {{/each}}
 {{#if canAdd}}
