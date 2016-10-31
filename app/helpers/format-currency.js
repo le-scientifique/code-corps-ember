@@ -10,7 +10,11 @@ export function formatCurrency(params) {
   let [value] = params;
   let floatValue = parseFloat(value);
 
-  return `$${floatValue.toFixed(2).replace(COMMAS_EVERY_THREE_DIGITS, '$1,')}`;
+  if (value) {
+    return `$${floatValue.toFixed(2).replace(COMMAS_EVERY_THREE_DIGITS, '$1,')}`;
+  } else {
+    return value;
+  }
 }
 
 export default helper(formatCurrency);

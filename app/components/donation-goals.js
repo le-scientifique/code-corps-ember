@@ -8,9 +8,13 @@ const {
 export default Component.extend({
   classNames: ['donation-goals'],
 
-  hasExistingDonationGoals: computed.gt('existingDonationGoals', 0),
-  existingDonationGoals: computed.setDiff('project.donationsGoals', 'newDonationGoals'),
-  newDonationGoals: computed.filterBy('project.donationGoals', 'isNew'),
+  canAdd: computed.not('currentlyEditingDonationGoals'),
+  canCancel: computed.alias('hasExistingDonationGoals'),
+  canEdit: computed.not('currentlyEditingDonationGoals'),
+  currentlyEditingDonationGoals: computed.notEmpty('isEditingDonationGoals'),
+  existingDonationGoals: computed.setDiff('project.donationGoals', 'newDonationGoals'),
+  hasExistingDonationGoals: computed.notEmpty('existingDonationGoals'),
+  isEditingDonationGoals: computed.filterBy('project.donationGoals', 'isEditing'),
 
   actions: {
     add(project) {
