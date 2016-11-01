@@ -16,7 +16,6 @@ const {
  * Allows creating new and editing existing donation goals,
  * as well as turning on donations for a project (work in progress)
  *
- * @class   Ember.Route
  * @module  Route
  * @extends Ember.Route
  */
